@@ -1,0 +1,16 @@
+name: "🚀 Feature Request"
+description: "Suggest an idea for improvement."
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: "What problem are you solving?"
+      description: "A clear description of the pain point."
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: "The Solution"
+      description: "How should it work?"

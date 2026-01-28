@@ -1,0 +1,30 @@
+name: "🐛 Bug Report"
+description: "Create a report to help us improve."
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please ensure you've checked the docs and existing issues first.
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: "OS, Java Version, and Runner (Local/Docker/CI)"
+      placeholder: "e.g. macOS 15, Java 25-tem, Docker"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: "To Reproduce"
+      description: "Steps to reproduce the behavior."
+      placeholder: "1. Run ./gradlew build..."
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Relevant Logs"
+      description: "Please paste the Gradle or Spring Boot output here."
+      render: shell
