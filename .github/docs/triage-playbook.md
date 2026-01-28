@@ -12,7 +12,7 @@ This playbook is for maintainers and triage engineers to standardize issue handl
 2. Assign an owner: Add an assignee or the `triage` team depending on availability.
 3. Add labels:
    - `type/bug` | `type/feature` | `type/docs` | `type/security` (internal only)
-   - `severity/critical` | `severity/high` | `severity/medium` | `severity/low`
+   - `sev/critical` | `sev/high` | `sev/medium` | `sev/low`
    - `needs-triage`, `good-first-issue`, `help-wanted`, `duplicate`, `wontfix`
 4. Classify priority & milestone: Set `priority/urgent` for hotfixes or add to the next milestone for planned work.
 5. Reproduce & gather logs: Ask for steps, environment, and relevant logs or attach failing CI artifacts.
