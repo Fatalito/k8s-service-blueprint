@@ -3,7 +3,7 @@
 
 [versions]
 springBoot = "4.0.1"
-spotless = "8.2.0"
+spotless = "8.2.1"
 cycloneDx = "3.1.0"
 lombok = "9.2.0"
 
