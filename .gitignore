@@ -1,12 +1,15 @@
 # IDE & OS
 .idea/
 *.iml
-.vscode/
+.vscode/**
+!.vscode/settings.json
+!.vscode/extensions.json
 .DS_Store
 
 # Build & Artifacts
 build/
 out/
+bin/
 .gradle/
 *.jar
 *.war

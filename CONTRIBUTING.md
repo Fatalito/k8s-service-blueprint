@@ -23,7 +23,7 @@ Report vulnerabilities privately. See [SECURITY.md](SECURITY.md) for the disclos
 
 ## Tooling & Version Pinning
 To ensure build reproducibility, the following versions are enforced:
-- **Runtime:** Java 25 (LTS) / Spring Boot 4.0.1
+- **Runtime:** Java 25 (LTS) / Spring Boot 4.0.x
 - **IaC:** Terraform v1.14.x / AWS Provider v6.x
 - **Linter:** google-java-format v1.33.0 (AOSP)
 - **Container:** Distroless (gcr.io/distroless/java25)

@@ -14,6 +14,7 @@ spring-boot-starter-actuator = { group = "org.springframework.boot", name = "spr
 micrometer-registry-prometheus = { group = "io.micrometer", name = "micrometer-registry-prometheus" }
 spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test" }
 junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher" }
+spring-boot-webtestclient = { group = "org.springframework.boot", name = "spring-boot-webtestclient" }
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
