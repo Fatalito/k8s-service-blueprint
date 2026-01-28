@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 [versions]
-springBoot = "4.0.1"
+springBoot = "4.0.2"
 spotless = "8.2.1"
 cycloneDx = "3.1.0"
 lombok = "9.2.0"
