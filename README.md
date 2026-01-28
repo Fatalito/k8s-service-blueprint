@@ -15,7 +15,7 @@ This repository is an enterprise-grade reference architecture for building, depl
 - **Observability:** Pre-configured for Prometheus metrics and structured JSON logging.
 
 ## 🛠 Tech Stack
-- **Runtime:** Java/Springboot
+- **Runtime:** Java/Spring Boot
 - **Infrastructure:** AWS EKS, Terraform
 - **Orchestration:** Kubernetes (Helm)
 - **CI/CD:** GitHub Actions

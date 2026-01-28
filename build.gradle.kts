@@ -29,6 +29,7 @@ dependencies {
     implementation(libs.micrometer.registry.prometheus)
 
     testImplementation(libs.spring.boot.starter.test)
+    testImplementation(libs.spring.boot.starter.webmvc.test)
     testImplementation(libs.spring.boot.webtestclient)
     testRuntimeOnly(libs.junit.platform.launcher)
 }
