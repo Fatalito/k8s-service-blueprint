@@ -1,0 +1,22 @@
+# Copyright (c) 2026 Fatalito
+# SPDX-License-Identifier: Apache-2.0
+
+[versions]
+springBoot = "4.0.1"
+spotless = "8.2.0"
+cycloneDx = "3.1.0"
+lombok = "9.2.0"
+
+[libraries]
+spring-boot-dependencies = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "springBoot" }
+spring-boot-starter-web = { group = "org.springframework.boot", name = "spring-boot-starter-web" }
+spring-boot-starter-actuator = { group = "org.springframework.boot", name = "spring-boot-starter-actuator" }
+micrometer-registry-prometheus = { group = "io.micrometer", name = "micrometer-registry-prometheus" }
+spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test" }
+junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher" }
+
+[plugins]
+spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+cycloneDx = { id = "org.cyclonedx.bom", version.ref = "cycloneDx" }
+lombok = { id = "io.freefair.lombok", version.ref = "lombok" }

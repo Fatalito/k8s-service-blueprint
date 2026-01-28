@@ -8,8 +8,8 @@ We follow Hexagonal Architecture and Java 25 idioms.
 - **Environment:** Run `sdk env` to use the pinned JDK version in `.sdkmanrc`.
 - **Branching:** Use `feature/` or `fix/` prefixes for branches.
 - **Git Hooks:** Pre-commit hooks are installed automatically on your first `./gradlew build`. 
-  - The hook runs `spotlessApply` and `testClasses`. 
-  - **Auto-Fix:** Formatting issues are corrected and re-staged automatically.
+  - The hook runs `spotlessCheck` and `testClasses`. 
+  - **Style-Guard:** Formatting issues block the commit, fix with ./gradlew spotlessApply.
   - **Validation:** Only verify that code and tests compile.
 - **Commits:** Use [Conventional Commits](https://www.conventionalcommits.org/).
 
