@@ -1,0 +1,9 @@
+# Global owners
+* @Fatalito
+
+# Infrastructure / DevOps 
+/infra/ @Fatalito
+
+# Security / Governance
+/SECURITY.md @Fatalito
+/.github/ @Fatalito
