@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright (c) 2026 Fatalito
+# SPDX-License-Identifier: Apache-2.0
 set -euo pipefail
 
 # Only run checks if Java/Kotlin files are staged

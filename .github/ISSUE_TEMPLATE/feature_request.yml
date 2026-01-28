@@ -1,3 +1,7 @@
+
+# Copyright (c) 2026 Fatalito
+# SPDX-License-Identifier: Apache-2.0
+
 name: "🚀 Feature Request"
 description: "Suggest an idea for improvement."
 labels: ["enhancement", "needs-triage"]

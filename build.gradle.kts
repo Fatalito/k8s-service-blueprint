@@ -1,4 +1,6 @@
-import org.cyclonedx.Version
+
+// Copyright (c) 2026 Fatalito
+// SPDX-License-Identifier: Apache-2.0
 
 plugins {
     java
@@ -66,16 +68,35 @@ tasks.jacocoTestReport {
     }
 }
 
+val rawLicense = file("license.header").readLines() // Read as lines for easier mapping
+
+fun comment(
+    lines: List<String>,
+    prefix: String,
+    suffix: String = "",
+    linePrefix: String = "",
+): String {
+    val content = lines.joinToString("\n") { "$linePrefix$it" }
+    return "$prefix\n$content\n$suffix\n\n".replace(Regex("\n{3,}"), "\n\n") // Keep spacing tight
+}
 spotless {
     kotlinGradle {
-        target("*.gradle.kts")
+        target("*.gradle.kts", "gradle/*.gradle.kts")
         ktlint()
+        licenseHeader(comment(rawLicense, "", "", "// "), "^(import |plugins |rootProject|include)")
     }
     java {
+        target("src/*/java/**/*.java")
         googleJavaFormat("1.33.0").aosp()
         removeUnusedImports()
         trimTrailingWhitespace()
         endWithNewline()
+        licenseHeader(comment(rawLicense, "/*", " */", " * "), "^package ")
+    }
+    format("styling") {
+        target("**/*.yml", "**/*.yaml", "**/*.properties", ".env")
+        targetExclude("**/build/**", "**/.gradle/**")
+        licenseHeader(comment(rawLicense, "", "", "# "), "^[^#\\s]")
     }
 }
 
