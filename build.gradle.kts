@@ -1,15 +1,13 @@
-
 // Copyright (c) 2026 Fatalito
 // SPDX-License-Identifier: Apache-2.0
 
 plugins {
     java
     jacoco
-    id("org.springframework.boot") version "4.0.1"
-    id("io.spring.dependency-management") version "1.1.7"
-    id("com.diffplug.spotless") version "8.2.0"
-    id("io.freefair.lombok") version "9.2.0"
-    id("org.cyclonedx.bom") version "3.1.0"
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.cycloneDx)
+    alias(libs.plugins.lombok)
 }
 
 group = "com.fatalito"
@@ -24,12 +22,14 @@ java {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("io.micrometer:micrometer-registry-prometheus")
+    implementation(platform(libs.spring.boot.dependencies))
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation(libs.spring.boot.starter.web)
+    implementation(libs.spring.boot.starter.actuator)
+    implementation(libs.micrometer.registry.prometheus)
+
+    testImplementation(libs.spring.boot.starter.test)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 val normalizeBom =
@@ -68,7 +68,7 @@ tasks.jacocoTestReport {
     }
 }
 
-val rawLicense = file("license.header").readLines() // Read as lines for easier mapping
+val rawLicense = file("license.header").readLines()
 
 fun comment(
     lines: List<String>,
@@ -77,7 +77,7 @@ fun comment(
     linePrefix: String = "",
 ): String {
     val content = lines.joinToString("\n") { "$linePrefix$it" }
-    return "$prefix\n$content\n$suffix\n\n".replace(Regex("\n{3,}"), "\n\n") // Keep spacing tight
+    return "$prefix\n$content\n$suffix\n\n".replace(Regex("\n{3,}"), "\n\n").trimStart()
 }
 spotless {
     kotlinGradle {
@@ -94,7 +94,7 @@ spotless {
         licenseHeader(comment(rawLicense, "/*", " */", " * "), "^package ")
     }
     format("styling") {
-        target("**/*.yml", "**/*.yaml", "**/*.properties", ".env")
+        target("**/*.yml", "**/*.yaml", "**/*.properties", "**/*.toml", ".env")
         targetExclude("**/build/**", "**/.gradle/**")
         licenseHeader(comment(rawLicense, "", "", "# "), "^[^#\\s]")
     }
@@ -126,7 +126,7 @@ val installLocalGitHook =
         }
     }
 
-// Installs hook
+// Install hook
 tasks {
     withType<JavaCompile> {
         dependsOn(installLocalGitHook)
