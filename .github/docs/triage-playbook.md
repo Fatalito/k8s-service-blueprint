@@ -23,12 +23,14 @@ This playbook is for maintainers and triage engineers to standardize issue handl
 - If someone opens a public issue that looks security-related, politely request they use the private disclosure channel and reference [SECURITY.md](/SECURITY.md).
 
 ## Severity Definitions
+
 | Label | Criteria |
 | :--- | :--- |
 | `sev/critical` | Security breach, data loss, or production outage. |
 | `sev/high` | Major feature broken with no workaround. |
 | `sev/medium` | Issue with a workaround; minor functional bug. |
 | `sev/low` | UI/UX polish, typos, or documentation. |
+
 
 ## PR Triage
 - Ensure PRs reference an issue when appropriate and include tests.
