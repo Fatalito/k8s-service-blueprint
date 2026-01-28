@@ -32,18 +32,16 @@ dependencies {
     testRuntimeOnly(libs.junit.platform.launcher)
 }
 
-val normalizeBom =
-    tasks.register<Copy>("normalizeBom") {
-        from(tasks.named("cyclonedxDirectBom"))
-        into(layout.buildDirectory.dir("reports"))
-        include("bom.json")
-    }
-tasks.named("processResources") {
-    dependsOn(normalizeBom)
+tasks.build {
+    dependsOn(tasks.cyclonedxDirectBom)
 }
 
-// Disable the aggregate task to prevent folder conflicts and redundant work
-tasks.named("cyclonedxBom") {
+tasks.cyclonedxDirectBom {
+    xmlOutput.unsetConvention()
+    jsonOutput.set(layout.buildDirectory.file("reports/${project.name}-bom.json"))
+    includeConfigs.set(listOf("runtimeClasspath"))
+}
+tasks.cyclonedxBom {
     enabled = false
 }
 

@@ -3,9 +3,9 @@
 
 [versions]
 springBoot = "4.0.1"
-spotless = "7.0.2"
-cycloneDx = "2.2.0"
-lombok = "8.12.1"
+spotless = "8.2.0"
+cycloneDx = "3.1.0"
+lombok = "9.2.0"
 
 [libraries]
 spring-boot-dependencies = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "springBoot" }
