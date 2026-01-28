@@ -81,8 +81,12 @@ spotless {
 
 val installLocalGitHook =
     tasks.register<Copy>("installLocalGitHook") {
-        from(file("scripts/pre-commit.sh"))
-        into(file(".git/hooks"))
+        val gitHooksDir = layout.projectDirectory.dir(".git/hooks")
+
+        onlyIf { gitHooksDir.asFile.parentFile.exists() }
+
+        from(layout.projectDirectory.file("scripts/pre-commit.sh"))
+        into(gitHooksDir)
         rename { "pre-commit" }
         filePermissions {
             user {
