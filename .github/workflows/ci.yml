@@ -1,0 +1,104 @@
+# Copyright (c) 2026 Fatalito
+# SPDX-License-Identifier: Apache-2.0
+
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-verify:
+    name: Build & Verify
+    runs-on: ubuntu-latest
+    
+    # Required for the coverage reporter to comment on PRs
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.2.2
+        
+      - name: Extract Java Version from .sdkmanrc
+        id: sdkmanrc
+        run: |
+          VERSION=$(grep 'java=' .sdkmanrc | cut -d'=' -f2 | cut -d'-' -f1)
+          echo "java_version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Set up JDK ${{ steps.sdkmanrc.outputs.java_version }}
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4.7.0
+        with:
+          java-version: ${{ steps.sdkmanrc.outputs.java_version }}
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Install Snyk CLI
+        uses: snyk/actions/setup@9adf32b1121593767fc3c057af55b55db032dc04 # master
+
+      - name: Run Snyk to check for vulnerabilities
+        continue-on-error: true # Snyk may not fully support Gradle 9 / Java 25 yet
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk test --severity-threshold=high
+
+      - name: Grant Execute Permissions
+        run: chmod +x gradlew
+
+      - name: Execute Build & Tests
+        run: ./gradlew spotlessCheck check build --parallel --configuration-cache
+
+      - name: Add Coverage PR Comment
+        uses: madrapps/jacoco-report@7c362aca34caf958e7b1c03464bd8781db9f8da7 # v1.7.1
+        if: github.event_name == 'pull_request' # Only comment on PRs
+        with:
+          paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 80
+          min-coverage-changed-files: 90
+          title: "📊 Code Coverage Report"
+
+      - name: Upload Test Artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.0
+        with:
+          name: junit-reports
+          path: build/test-results/test/
+      
+      - name: SonarCloud Scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew sonar --info
+      
+      - name: Upload SBOM Artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.0
+        with:
+          name: cyclonedx-sbom
+          path: build/reports/bom.json
+
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@54c9adbab1582c2ef04b2016b760714a4bfde3cf # v3.1.0
+        with:
+          dockerfile: Dockerfile
+
+      - name: Set up Docker Build
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.10.0
+
+      - name: Build Docker Image
+        run: |
+          docker build . -t blueprint:test --build-arg BUILD_SOURCE=local
+      
+      - name: Snyk Container Scan
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk container test blueprint:test --file=Dockerfile --severity-threshold=high

@@ -1,0 +1,9 @@
+.git
+.gradle
+build
+!build/libs/app.jar
+bin
+.idea
+.vscode
+.sdkmanrc
+*.log
