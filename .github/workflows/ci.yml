@@ -94,7 +94,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build . -t blueprint:test --target runtime --build-arg JAR_FILE=build/libs/app.jar
+          docker build . -t blueprint:test --build-arg BUILD_SOURCE=local
       
       - name: Snyk Container Scan
         continue-on-error: true
