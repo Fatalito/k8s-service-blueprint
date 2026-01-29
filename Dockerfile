@@ -21,6 +21,7 @@ WORKDIR /app
 COPY build/libs/app.jar /app/build/libs/app.jar
 
 # Stage 3: Source Selector
+# hadolint ignore=DL3006
 FROM ${BUILD_SOURCE} AS artifact-source
 
 # Stage 4: Runtime (Hardened)
