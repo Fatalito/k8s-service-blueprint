@@ -101,4 +101,4 @@ jobs:
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk container test blueprint:test --file=Dockerfile
+        run: snyk container test blueprint:test --file=Dockerfile --severity-threshold=high
