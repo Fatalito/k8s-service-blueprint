@@ -40,13 +40,14 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
+      - name: Install Snyk CLI
+        uses: snyk/actions/setup@master
+
       - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/gradle@master
         continue-on-error: true # Snyk may not fully support Gradle 9 / Java 25 yet
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=high
+        run: snyk test --severity-threshold=high
 
       - name: Grant Execute Permissions
         run: chmod +x gradlew
@@ -96,10 +97,7 @@ jobs:
           docker build . -t blueprint:test --target runtime --build-arg JAR_FILE=build/libs/app.jar
       
       - name: Snyk Container Scan
-        uses: snyk/actions/docker@master
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          image: blueprint:test
-          args: --file=Dockerfile          
+        run: snyk container test blueprint:test --file=Dockerfile
