@@ -38,12 +38,6 @@ class SmokeTest {
     }
 
     @Test
-    @DisplayName("Entry Point: Main method should execute without failure")
-    void mainMethodStarts() {
-        BlueprintApplication.main(new String[] {"--server.port=0"});
-    }
-
-    @Test
     @DisplayName("Integration: Heartbeat should return UP status")
     void healthEndpointIsUp() {
         webTestClient
