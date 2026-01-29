@@ -101,7 +101,7 @@ tasks.jacocoTestReport {
         files(
             classDirectories.files.map {
                 fileTree(it) {
-                    exclude("com/fatalito/blueprint/BlueprintApplication.class")
+                    exclude("**/BlueprintApplication.class")
                 }
             },
         ),
