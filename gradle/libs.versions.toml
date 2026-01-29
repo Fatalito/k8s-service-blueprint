@@ -6,7 +6,7 @@ springBoot = "4.0.2"
 spotless = "8.2.1"
 cycloneDx = "3.1.0"
 lombok = "9.2.0"
-sonar = "7.2.2.6593"
+sonar = "7.1.0.6387"
 gitProperties = "2.5.4"
 
 [libraries]
