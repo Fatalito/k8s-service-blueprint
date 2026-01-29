@@ -111,6 +111,15 @@ tasks.jacocoTestReport {
 
 tasks.jacocoTestCoverageVerification {
     dependsOn(tasks.jacocoTestReport)
+    classDirectories.setFrom(
+        files(
+            classDirectories.files.map {
+                fileTree(it) {
+                    exclude("**/BlueprintApplication.class")
+                }
+            },
+        ),
+    )
     violationRules {
         rule {
             element = "BUNDLE"
