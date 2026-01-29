@@ -1,0 +1,105 @@
+# Copyright (c) 2026 Fatalito
+# SPDX-License-Identifier: Apache-2.0
+
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main, 'feature/*', 'fix/*', 'dependabot/**']
+  pull_request:
+    branches: [ main ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-verify:
+    name: Build & Verify
+    runs-on: ubuntu-latest
+    
+    # Required for the coverage reporter to comment on PRs
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: Extract Java Version from .sdkmanrc
+        id: sdkmanrc
+        run: |
+          VERSION=$(grep 'java=' .sdkmanrc | cut -d'=' -f2 | cut -d'-' -f1)
+          echo "java_version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Set up JDK ${{ steps.sdkmanrc.outputs.java_version }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ steps.sdkmanrc.outputs.java_version }}
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/gradle@master
+        continue-on-error: true # Snyk may not fully support Gradle 9 / Java 25 yet
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+
+      - name: Grant Execute Permissions
+        run: chmod +x gradlew
+
+      - name: Execute Build & Tests
+        run: ./gradlew spotlessCheck check build --parallel --configuration-cache
+
+      - name: Add Coverage PR Comment
+        uses: madrapps/jacoco-report@v1.7.1
+        if: github.event_name == 'pull_request' # Only comment on PRs
+        with:
+          paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 80
+          min-coverage-changed-files: 90
+          title: "📊 Code Coverage Report"
+
+      - name: Upload Test Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-reports
+          path: build/test-results/test/
+      
+      - name: SonarCloud Scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew sonar --info
+      
+      - name: Upload SBOM Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cyclonedx-sbom
+          path: build/reports/bom.json
+
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+
+      - name: Set up Docker Build
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker Image
+        run: |
+          docker build . -t blueprint:test --target runtime --build-arg JAR_FILE=build/libs/app.jar
+      
+      - name: Snyk Container Scan
+        uses: snyk/actions/docker@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: blueprint:test
+          args: --file=Dockerfile          

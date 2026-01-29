@@ -6,6 +6,8 @@ springBoot = "4.0.2"
 spotless = "8.2.1"
 cycloneDx = "3.1.0"
 lombok = "9.2.0"
+sonar = "7.2.2.6593"
+gitProperties = "2.5.4"
 
 [libraries]
 spring-boot-dependencies = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "springBoot" }
@@ -22,3 +24,5 @@ spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 cycloneDx = { id = "org.cyclonedx.bom", version.ref = "cycloneDx" }
 lombok = { id = "io.freefair.lombok", version.ref = "lombok" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonar" }
+git-properties = { id = "com.gorylenko.gradle-git-properties", version.ref = "gitProperties" }

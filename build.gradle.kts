@@ -4,9 +4,12 @@
 plugins {
     java
     jacoco
+    checkstyle
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spotless)
     alias(libs.plugins.cycloneDx)
+    alias(libs.plugins.sonarqube)
+    alias(libs.plugins.git.properties)
     alias(libs.plugins.lombok)
 }
 
@@ -34,17 +37,45 @@ dependencies {
     testRuntimeOnly(libs.junit.platform.launcher)
 }
 
+gitProperties {
+    keys = listOf("git.branch", "git.commit.id.abbrev", "git.commit.time")
+}
+
+checkstyle {
+    toolVersion = "10.21.1"
+    isIgnoreFailures = false
+    maxWarnings = 0
+}
+
 tasks.build {
     dependsOn(tasks.cyclonedxDirectBom)
 }
 
 tasks.cyclonedxDirectBom {
     xmlOutput.unsetConvention()
-    jsonOutput.set(layout.buildDirectory.file("reports/${project.name}-bom.json"))
+    jsonOutput.set(layout.buildDirectory.file("reports/bom.json"))
     includeConfigs.set(listOf("runtimeClasspath"))
 }
 tasks.cyclonedxBom {
     enabled = false
+}
+
+tasks.bootJar {
+    archiveFileName.set("app.jar")
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "Fatalito_k8s-service-blueprint")
+        property("sonar.organization", "fatalito")
+        property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.coverage.jacoco.xmlReportPaths", "${layout.buildDirectory.get()}/reports/jacoco/test/jacocoTestReport.xml")
+        property("sonar.exclusions", "**/config/**, **/infrastructure/web/dto/**")
+    }
+}
+
+tasks.sonar {
+    dependsOn(tasks.jacocoTestReport)
 }
 
 tasks.test {
@@ -65,6 +96,30 @@ tasks.jacocoTestReport {
     reports {
         xml.required.set(true)
         html.required.set(true)
+    }
+    classDirectories.setFrom(
+        files(
+            classDirectories.files.map {
+                fileTree(it) {
+                    exclude("com/fatalito/blueprint/BlueprintApplication.class")
+                }
+            },
+        ),
+    )
+    finalizedBy(tasks.jacocoTestCoverageVerification)
+}
+
+tasks.jacocoTestCoverageVerification {
+    dependsOn(tasks.jacocoTestReport)
+    violationRules {
+        rule {
+            element = "BUNDLE"
+            limit {
+                counter = "LINE"
+                value = "COVEREDRATIO"
+                minimum = "0.80".toBigDecimal()
+            }
+        }
     }
 }
 
@@ -133,5 +188,8 @@ tasks {
     }
     build {
         dependsOn(installLocalGitHook)
+    }
+    check {
+        dependsOn(jacocoTestCoverageVerification)
     }
 }
