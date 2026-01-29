@@ -42,7 +42,7 @@ gitProperties {
 }
 
 checkstyle {
-    toolVersion = "10.21.1"
+    toolVersion = "10.25.0"
     isIgnoreFailures = false
     maxWarnings = 0
 }
