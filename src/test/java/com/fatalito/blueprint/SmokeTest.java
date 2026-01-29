@@ -38,7 +38,7 @@ class SmokeTest {
     }
 
     @Test
-    @DisplayName("Integration: Heartbeat should return ALIVE status")
+    @DisplayName("Integration: Heartbeat should return UP status")
     void healthEndpointIsUp() {
         webTestClient
                 .get()
