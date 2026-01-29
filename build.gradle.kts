@@ -74,7 +74,7 @@ sonar {
         property("sonar.organization", "fatalito")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.coverage.jacoco.xmlReportPaths", "${layout.buildDirectory.get()}/reports/jacoco/test/jacocoTestReport.xml")
-        property("sonar.exclusions", "**/config/**, **/infrastructure/web/dto/**")
+        property("sonar.exclusions", "**/BlueprintApplication.java, **/config/**, **/infrastructure/web/dto/**")
     }
 }
 
