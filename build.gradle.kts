@@ -14,7 +14,7 @@ plugins {
 }
 
 configurations.checkstyle {
-    resolutionStrategy.force("org.apache.commons:commons-lang3:3.18.0")
+    resolutionStrategy.force("org.apache.commons:commons-lang3:3.20.0")
 }
 
 group = "com.fatalito"
